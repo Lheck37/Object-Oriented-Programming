@@ -1,0 +1,130 @@
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+//----class circle-----
+class circle {
+private:
+    double radius;
+
+public:
+    void input() {
+        cout << "Please enter radius: ";
+        cin >> radius;
+    }
+    double perimeter() {
+        return 2 * M_PI * radius;
+    }
+    double area() {
+        return M_PI * radius * radius;
+    }
+}; // <-- semicolon here
+
+//---class square-----
+class square {
+private:
+    double side1;
+public:
+    void input() {
+        cout << "Please enter length of side 1: ";
+        cin >> side1;
+    }
+    double perimeter() {
+        return 4 * side1;
+    }
+    double area() {
+        return side1 * side1;
+    }
+}; // <-- semicolon here
+
+//-----class rectangle-----
+class rectangle {
+private:
+    double side1, side2;
+public:
+    void input() {
+        cout << "Please enter length of side 1: " << endl;
+        cin >> side1;
+        cout << "Please enter length of side 2: " << endl;
+        cin >> side2;
+    }
+    double area() {
+        return side1 * side2;
+    }
+    double perimeter() {
+        return 2 * (side1 + side2);
+    }
+}; // <-- semicolon here
+
+//----class triangle----
+class triangle {
+private:
+    double a, b, c;
+
+public:
+    bool isvalid() {
+        return (a > 0 && b > 0 && c > 0) &&
+               (a + b > c) && (a + c > b) && (c + b > a);
+    }
+
+    void input() {
+        cout << "Enter length of side 1: " << endl;
+        cin >> a;
+        cout << "Enter length of side 2: " << endl;
+        cin >> b;
+        cout << "Enter length of side 3: " << endl;
+        cin >> c;
+
+        if (!isvalid()) {
+            cout << "These sides dont form a triangle." << endl;
+        }
+    }
+
+    double perimeter() {
+        return a + b + c;
+    }
+    double area() {
+        double s = perimeter() / 2.0;
+        return sqrt(s * (s - a) * (s - b) * (s - c));
+    }
+}; // <-- semicolon here
+
+//----main function-------
+int main () {
+    int choice;
+    cout << "Please choose one of the following shapes." << endl;
+    cout << "1 is circle." << endl;
+    cout << "2 is square." << endl;
+    cout << "3 is rectangle." << endl;
+    cout << "4 is triangle." << endl;
+    cin >> choice;
+
+    if (choice == 1) {
+        circle c;
+        c.input();
+        cout << "The perimeter is " << c.perimeter() << endl;
+        cout << "The area is " << c.area() << endl;
+    }
+    else if (choice == 2) {
+        square s;
+        s.input();
+        cout << "The perimeter is " << s.perimeter() << endl;
+        cout << "The area is " << s.area() << endl;
+    }
+    else if (choice == 3) {
+        rectangle r;
+        r.input();
+        cout << "the perimeter is " << r.perimeter() << endl;
+        cout << "the area is " << r.area() << endl;
+    }
+    else if (choice == 4) {
+        triangle t;
+        t.input();
+        cout << "The perimeter is " << t.perimeter() << endl;
+        cout << "The area is " << t.area() << endl;
+    }
+    else {
+        cout << "Invalid choice, try again!";
+    }
+    return 0;
+}
