@@ -1,0 +1,73 @@
+#include <iostream>
+#include <string>
+#include <stdexcept>
+using namespace std;
+
+struct card { int id; string keyword; };
+bool operator<(const card& a, const card& b){
+    if(a.keyword != b.keyword) return a.keyword < b.keyword;
+    return a.id < b.id;
+}
+ostream& operator<<(ostream& os, const card& c){ return os<<c.keyword<<":"<<c.id; }
+
+template<class T>
+class tree{
+    struct node{ T v; node* l; node* r; explicit node(const T& x): v(x), l(nullptr), r(nullptr){} };
+    node* root = nullptr;
+
+    static void free_(node* p){ if(!p) return; free_(p->l); free_(p->r); delete p; }
+    static node* copy_(node* p){ if(!p) return nullptr; node* n=new node(p->v); n->l=copy_(p->l); n->r=copy_(p->r); return n; }
+    static void add(node*& p, const T& x){
+        if(!p){ p=new node(x); return; }
+        if(x < p->v) add(p->l,x);
+        else if(p->v < x) add(p->r,x);
+    }
+    static const T& get(node* p, const T& x){
+        if(!p) throw runtime_error("not found");
+        if(x < p->v) return get(p->l,x);
+        if(p->v < x) return get(p->r,x);
+        return p->v;
+    }
+    static node* min_(node* p){ while(p && p->l) p=p->l; return p; }
+    static void del(node*& p, const T& x){
+        if(!p) return;
+        if(x < p->v) del(p->l,x);
+        else if(p->v < x) del(p->r,x);
+        else{
+            if(!p->l && !p->r){ delete p; p=nullptr; }
+            else if(!p->l){ node* t=p->r; delete p; p=t; }
+            else if(!p->r){ node* t=p->l; delete p; p=t; }
+            else{ node* s=min_(p->r); p->v=s->v; del(p->r,s->v); }
+        }
+    }
+    static void in (node* p){ if(!p) return; in(p->l);  cout<<p->v<<" "; in(p->r); }
+    static void pre(node* p){ if(!p) return; cout<<p->v<<" "; pre(p->l); pre(p->r); }
+    static void post(node* p){ if(!p) return; post(p->l); post(p->r); cout<<p->v<<" "; }
+
+public:
+    tree() = default;                    // empty
+    explicit tree(const T& x){ add(root,x); }      // one node
+    tree(const tree& other){ root = copy_(other.root); } // copy ctor
+    ~tree(){ free_(root); }
+
+    T    find(const T& x) const { return get(root,x); }
+    void insert(const T& x){ add(root,x); }
+    void delete_key(const T& x){ del(root,x); } // can't name it 'delete' in C++
+    void inorder()  const { in(root);  cout<<"\n"; }
+    void preorder() const { pre(root); cout<<"\n"; }
+    void postorder()const { post(root);cout<<"\n"; }
+};
+
+int main(){
+    tree<card> t;
+    cout<<"index cards bst (i=insert, f=find, d=delete, p=print, q=quit)\n";
+    char c;
+    while(cout<<"> ", cin>>c){
+        if(c=='i'){ card x; cout<<"keyword id: "; if(!(cin>>x.keyword>>x.id)) break; t.insert(x); cout<<"ok "<<x<<"\n"; }
+        else if(c=='f'){ card x; cout<<"keyword id: "; if(!(cin>>x.keyword>>x.id)) break; try{ cout<<"found "<<t.find(x)<<"\n"; }catch(...){ cout<<"not found\n"; } }
+        else if(c=='d'){ card x; cout<<"keyword id: "; if(!(cin>>x.keyword>>x.id)) break; t.delete_key(x); cout<<"deleted if existed\n"; }
+        else if(c=='p'){ cout<<"in : "; t.inorder(); cout<<"pre: "; t.preorder(); cout<<"post: "; t.postorder(); }
+        else if(c=='q'){ break; }
+        else { cout<<"?\n"; }
+    }
+}
