@@ -1,0 +1,4 @@
+I built a basic binary search tree template tree<T>. Each node has a value plus left/right pointers. I added three constructors (empty, one value, copy) and the usual ops: 
+insert, find, delete. For delete I handle leaf, one child, and two children (I use the smallest node on the right). I print with inorder, preorder, and postorder using cout. 
+The little app stores index cards as {keyword, id} and lets me insert, find, delete, and print. I named the delete function delete_key because delete is a C++ keyword. I tested 
+it with cards like my name and age and the age of my wife and children.
