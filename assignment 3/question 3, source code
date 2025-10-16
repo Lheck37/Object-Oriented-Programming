@@ -1,0 +1,21 @@
+Created on Wed Oct 15 22:22:56 2025
+
+@author: loganheck
+"""
+
+
+def count_chars(s):
+    n = 0
+    for _ in s:
+        n += 1
+    return n
+
+def main():
+    print("Enter a string:")
+    text = input()
+    length = count_chars(text)
+    print("You entered:", text)
+    print("Number of characters:", length)
+
+if __name__ == "__main__":
+    main()
