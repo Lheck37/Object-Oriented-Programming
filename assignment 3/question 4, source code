@@ -1,0 +1,85 @@
+"""
+Created on Wed Oct 15 22:26:20 2025
+
+@author: loganheck
+"""
+
+import random
+
+BASES = ['A','C','G','T']
+
+def make_random_dna(n):
+    dna = ""
+    i = 0
+    while i < n:
+        dna += random.choice(BASES)
+        i += 1
+    return dna
+
+def mutate_one(base):
+    # change to a different base
+    options = []
+    for b in BASES:
+        if b != base:
+            options.append(b)
+    return random.choice(options)
+
+def mutate_string(dna, num_mutations):
+    lst = list(dna)
+    i = 0
+    length = len(lst)
+    while i < num_mutations:
+        idx = random.randint(0, length - 1)
+        lst[idx] = mutate_one(lst[idx])
+        i += 1
+    return "".join(lst)
+
+def frequency_table(dna_list):
+    # similar to the style shown in notes: a dict of lists
+    # find max length
+    n = 0
+    for dna in dna_list:
+        if len(dna) > n:
+            n = len(dna)
+    table = {
+        'A': [0]*n,
+        'C': [0]*n,
+        'G': [0]*n,
+        'T': [0]*n
+    }
+    for dna in dna_list:
+        for index, base in enumerate(dna):
+            table[base][index] += 1
+    return table
+
+def print_frequency_table(table, max_cols=16):
+    # print first max_cols columns so output isn't too huge
+    # this is just to make the output readable in the PDF
+    print("Frequency Table (showing first", max_cols, "positions):")
+    for base in ['A','C','G','T']:
+        row = table[base][:max_cols]
+        print(base, ":", row)
+
+def main():
+    random.seed(9)  # fixed seed to make example output stable
+    dna = make_random_dna(1000)
+    before = frequency_table([dna])
+    # Mutate 100 random positions
+    mutated = mutate_string(dna, 100)
+    after = frequency_table([mutated])
+
+    print("Original DNA (first 60 chars):")
+    print(dna[:60])
+    print()
+    print("Mutated DNA (first 60 chars):")
+    print(mutated[:60])
+    print()
+
+    print("Before mutation:")
+    print_frequency_table(before)
+    print()
+    print("After mutation:")
+    print_frequency_table(after)
+
+if __name__ == "__main__":
+    main()
